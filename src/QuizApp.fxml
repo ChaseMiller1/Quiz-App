@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+   <children>
+      <VBox prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <HBox prefHeight="376.0" prefWidth="600.0">
+               <children>
+                  <VBox prefHeight="375.0" prefWidth="300.0">
+                     <children>
+                        <HBox prefHeight="28.0" prefWidth="290.0">
+                           <children>
+                              <Label prefHeight="17.0" prefWidth="55.0" text="Questions">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="7.5" />
+                                 </HBox.margin>
+                              </Label>
+                              <Slider blockIncrement="1.0" max="30.0" min="1.0" onDragDropped="#getNumQuestions" prefHeight="34.0" prefWidth="155.0" value="5.0">
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="numQuestions" alignment="CENTER" editable="false" prefHeight="25.0" prefWidth="35.0" text="5">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="290.0">
+                           <children>
+                              <Label prefHeight="17.0" prefWidth="55.0" text="Subject">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="7.5" />
+                                 </HBox.margin>
+                              </Label>
+                              <ComboBox fx:id="subjectBox" onAction="#setSubject" prefHeight="25.0" prefWidth="190.0" promptText="Pick a Subject">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+                                 </HBox.margin>
+                              </ComboBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="290.0">
+                           <children>
+                              <Label prefHeight="17.0" prefWidth="55.0" text="Type">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="7.5" />
+                                 </HBox.margin>
+                              </Label>
+                              <ComboBox fx:id="typeBox" onAction="#setType" prefHeight="25.0" prefWidth="190.0" promptText="Multiple Choice / True False">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+                                 </HBox.margin>
+                              </ComboBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="290.0">
+                           <children>
+                              <Label prefHeight="17.0" prefWidth="55.0" text="Difficulty">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="7.5" />
+                                 </HBox.margin>
+                              </Label>
+                              <ComboBox fx:id="difficultyBox" onAction="#setDifficulty" prefHeight="25.0" prefWidth="190.0" promptText="Easy / Medium / Hard">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+                                 </HBox.margin>
+                              </ComboBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="290.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#setDefaults" prefHeight="25.0" prefWidth="75.0" text="Default">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button mnemonicParsing="false" onAction="#startQuiz" prefHeight="25.0" prefWidth="75.0" text="Start Quiz">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button mnemonicParsing="false" onAction="#loadQuiz" prefHeight="25.0" prefWidth="75.0" text="Load Quiz">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="53.0" prefWidth="290.0">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                           <children>
+                              <Label text="✓">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="5.0" top="7.5" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="numRight" alignment="CENTER" editable="false" prefHeight="25.0" prefWidth="37.0" promptText="00">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" right="10.0" top="5.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Label text="✗">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" right="5.0" top="7.5" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="numWrong" alignment="CENTER" editable="false" prefHeight="25.0" prefWidth="37.0" promptText="00">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" right="10.0" top="5.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Label text="Total">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" right="5.0" top="7.5" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="score" alignment="CENTER" editable="false" prefHeight="25.0" prefWidth="45.0" promptText="000%">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" right="10.0" top="5.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button mnemonicParsing="false" onAction="#nextQuestion" prefHeight="25.0" prefWidth="45.0" text="Next">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="290.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#quitQuiz" prefHeight="25.0" prefWidth="75.0" text="Quit Quiz">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button mnemonicParsing="false" onAction="#saveQuiz" prefHeight="25.0" prefWidth="75.0" text="Save Quiz">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button mnemonicParsing="false" onAction="#pauseQuiz" prefHeight="25.0" prefWidth="75.0" text="Pause">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="375.0" prefWidth="300.0">
+                     <children>
+                        <TextArea fx:id="questionTextArea" editable="false" prefHeight="161.0" prefWidth="280.0" promptText="Question..." wrapText="true">
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </TextArea>
+                        <HBox prefHeight="70.0" prefWidth="300.0">
+                           <children>
+                              <Button fx:id="buttonA" mnemonicParsing="false" onAction="#buttonAPressed" prefHeight="50.0" prefWidth="130.0" text="Answer A" wrapText="true">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="buttonB" mnemonicParsing="false" onAction="#buttonBPressed" prefHeight="50.0" prefWidth="130.0" text="Answer B" wrapText="true">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="70.0" prefWidth="300.0">
+                           <children>
+                              <Button fx:id="buttonC" mnemonicParsing="false" onAction="#buttonCPressed" prefHeight="50.0" prefWidth="130.0" text="Answer C" wrapText="true">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="buttonD" mnemonicParsing="false" onAction="#buttonDPressed" prefHeight="50.0" prefWidth="130.0" text="Answer D" wrapText="true">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="55.0" prefWidth="300.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="100.0" text="Time:">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="timer" alignment="CENTER" editable="false" prefHeight="35.0" prefWidth="180.0" promptText="0:00">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" right="10.0" top="5.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
