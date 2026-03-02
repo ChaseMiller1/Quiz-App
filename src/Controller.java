@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.event.ActionEvent;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 
@@ -27,13 +26,13 @@ public class Controller implements Initializable {
     @FXML private ComboBox<String> difficultyBox;
 
     @FXML private TextArea questionTextArea;
+    @FXML private ProgressBar quizProgress;
     @FXML private Button buttonA;
     @FXML private Button buttonB;
     @FXML private Button buttonC;
     @FXML private Button buttonD;
     @FXML private List<Button> buttons;
     @FXML private Button nextButton;
-    @FXML private Button pauseButton;
     @FXML private HBox CDHBox;
 
     @FXML private TextField numRight;
@@ -42,6 +41,7 @@ public class Controller implements Initializable {
 
     @FXML private Label timeLabel;
     @FXML private TextField timer;
+    @FXML private Button pauseButton;
     private Timeline quizTimeline;
     private int secondsElapsed;
 
@@ -104,8 +104,9 @@ public class Controller implements Initializable {
             score.setStyle("");
             timer.setStyle("");
             timeLabel.setText("Time:");
+            quizProgress.setProgress(0);
 
-            String type = types.get(typeBox.getValue());
+                    String type = types.get(typeBox.getValue());
             List<Question> fetched = quizFetcher.fetchQuestions(
                     (int) questionBar.getValue(),
                     subjects.get(subjectBox.getValue()),
@@ -129,7 +130,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    private void loadQuiz() {
+    private void quizLoading() {
         // TODO: Implement method
     }
 
@@ -226,6 +227,9 @@ public class Controller implements Initializable {
                 updateQuestionUI(questions.nextQuestion());
                 nextButton.setText("Skip");
                 answered = false;
+                quizProgress.setProgress((double)
+                        (Integer.parseInt(numRight.getText()) + Integer.parseInt(numWrong.getText()))
+                        / questions.size());
             }
         }
     }
@@ -266,10 +270,5 @@ public class Controller implements Initializable {
         if (quizStarted) {
             updateQuestionUI(null);
         }
-    }
-
-    @FXML
-    private void saveQuiz() {
-        // TODO: Implement method
     }
 }

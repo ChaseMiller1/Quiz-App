@@ -29,8 +29,8 @@ public class QuestionList {
         return questions.get(currentIndex);
     }
 
-    public boolean isEmpty() {
-        return questions.isEmpty();
+    public int size() {
+        return questions.size();
     }
 
     /**
