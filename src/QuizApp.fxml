@@ -116,14 +116,14 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </VBox.margin>
                         </HBox>
-                        <HBox alignment="CENTER" prefHeight="53.0" prefWidth="290.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="53.0" prefWidth="290.0">
                            <VBox.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </VBox.margin>
                            <children>
                               <Label text="✓">
                                  <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="5.0" top="7.5" />
+                                    <Insets bottom="10.0" left="17.5" right="5.0" top="7.5" />
                                  </HBox.margin>
                               </Label>
                               <TextField fx:id="numRight" alignment="CENTER" editable="false" prefHeight="25.0" prefWidth="37.0" promptText="00" style="-fx-background-color: #A9DFBF;">
@@ -133,7 +133,7 @@
                               </TextField>
                               <Label text="✗">
                                  <HBox.margin>
-                                    <Insets bottom="10.0" right="5.0" top="7.5" />
+                                    <Insets bottom="10.0" left="30.0" right="5.0" top="7.5" />
                                  </HBox.margin>
                               </Label>
                               <TextField fx:id="numWrong" alignment="CENTER" editable="false" prefHeight="25.0" prefWidth="37.0" promptText="00" style="-fx-background-color: #F1948A;">
@@ -143,7 +143,7 @@
                               </TextField>
                               <Label text="Total">
                                  <HBox.margin>
-                                    <Insets bottom="10.0" right="5.0" top="7.5" />
+                                    <Insets bottom="10.0" left="22.5" right="5.0" top="7.5" />
                                  </HBox.margin>
                               </Label>
                               <TextField fx:id="score" alignment="CENTER" editable="false" prefHeight="25.0" prefWidth="45.0" promptText="000%">
