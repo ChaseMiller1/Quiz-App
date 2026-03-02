@@ -1,14 +1,16 @@
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.HBox;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type" // Jackson looks at this JSON key to choose the subclass
+        property = "type"
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MultipleChoice.class, name = "multiple"),
@@ -17,8 +19,6 @@ import java.util.List;
 
 public abstract class Question {
     private String question;
-    private String difficulty;
-    private String category;
 
     @JsonProperty("correct_answer")
     private String correctAnswer;
@@ -26,8 +26,21 @@ public abstract class Question {
     @JsonProperty("incorrect_answers")
     private List<String> incorrectAnswers;
 
-    // Standard Getters and Setters
+    public abstract void updateUI(TextArea textArea, HBox CDBox, List<Button> buttons);
+
+    /**
+     * Gets a list of the answers shuffled
+     * @return shuffled answers
+     */
+    public List<String> getShuffledAnswers() {
+        List<String> allAnswers = new ArrayList<>(incorrectAnswers);
+        allAnswers.add(correctAnswer);
+        Collections.shuffle(allAnswers);
+        return allAnswers;
+    }
+
     public String getQuestion() { return question; }
+
     public void setQuestion(String question) { this.question = question; }
     public String getCorrectAnswer() { return correctAnswer; }
     public void setCorrectAnswer(String correctAnswer) { this.correctAnswer = correctAnswer; }

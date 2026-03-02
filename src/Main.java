@@ -11,7 +11,7 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("QuizApp.fxml")));
         stage.setTitle("Quiz app");
-        stage.setScene(new Scene(root, 600, 400));
+        stage.setScene(new Scene(root, 600, 375));
         stage.show();
     }
     /**

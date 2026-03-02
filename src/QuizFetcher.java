@@ -6,10 +6,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Fetches quiz data from the API
@@ -31,7 +30,10 @@ public class QuizFetcher {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode resultsNode = getNodes(mapper, response, "results");
 
-        return mapper.readValue(resultsNode.toString(), new TypeReference<List<Question>>(){});
+        if (!resultsNode.isEmpty()) {
+            return mapper.readValue(resultsNode.toString(), new TypeReference<>(){});
+        }
+        return new ArrayList<>();
     }
 
     /**
@@ -39,12 +41,12 @@ public class QuizFetcher {
      * @return hashmap of names and their ID's
      * @throws Exception if issue with API
      */
-    public Map<String, Integer> getAllCategories() throws Exception {
+    public HashMap<String, Integer> getAllCategories() throws Exception {
         HttpResponse<String> response = getResponse("https://opentdb.com/api_category.php");
 
         JsonNode triviaCategories = getNodes(new ObjectMapper(), response, "trivia_categories");
 
-        Map<String, Integer> categories = new HashMap<>();
+        HashMap<String, Integer> categories = new HashMap<>();
         for (JsonNode node : triviaCategories) {
             categories.put(node.get("name").asText(), node.get("id").asInt());
         }
@@ -63,9 +65,8 @@ public class QuizFetcher {
      * Get question types
      * @return question types
      */
-    public Map<String, String> getTypeOptions() {
-        Map<String, String> types = new LinkedHashMap<>();
-        types.put("Any Type", "");
+    public HashMap<String, String> getTypeOptions() {
+        HashMap<String, String> types = new HashMap<>();
         types.put("Multiple Choice", "multiple");
         types.put("True / False", "boolean");
         return types;
