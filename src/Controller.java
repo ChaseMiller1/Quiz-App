@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controller class for Quiz App UI
+ */
 public class Controller implements Initializable {
 
     @FXML private Slider questionBar;
@@ -88,8 +91,11 @@ public class Controller implements Initializable {
     @FXML
     private void startQuiz() throws Exception {
         if (!quizStarted) {
-            String type = types.get(typeBox.getValue());
+            score.setStyle("");
+            timer.setStyle("");
+            timeLabel.setText("Time:");
 
+            String type = types.get(typeBox.getValue());
             List<Question> fetched = quizFetcher.fetchQuestions(
                     (int) questionBar.getValue(),
                     subjects.get(subjectBox.getValue()),
@@ -112,7 +118,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    private void loadQuiz(ActionEvent event) {
+    private void loadQuiz() {
         // TODO: Implement method
     }
 
@@ -122,6 +128,17 @@ public class Controller implements Initializable {
     private void updateQuestionUI(Question current) {
         if (current != null) {
             current.updateUI(questionTextArea, CDHBox, buttons);
+        } else {
+            quizStarted = false;
+            answered = true;
+            questionTextArea.setText("");
+            buttonA.setText("Button A");
+            buttonB.setText("Button B");
+            buttonC.setText("Button C");
+            buttonD.setText("Button D");
+            timeLabel.setText("Final Time:");
+            timer.setStyle("-fx-background-color: #A9DFBF;");
+            score.setStyle("-fx-background-color: #A9DFBF;");
         }
     }
 
