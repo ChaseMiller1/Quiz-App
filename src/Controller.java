@@ -1,9 +1,13 @@
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.HBox;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,6 +33,7 @@ public class Controller implements Initializable {
     @FXML private Button buttonD;
     @FXML private List<Button> buttons;
     @FXML private Button nextButton;
+    @FXML private Button pauseButton;
     @FXML private HBox CDHBox;
 
     @FXML private TextField numRight;
@@ -37,6 +42,8 @@ public class Controller implements Initializable {
 
     @FXML private Label timeLabel;
     @FXML private TextField timer;
+    private Timeline quizTimeline;
+    private int secondsElapsed;
 
     final QuizFetcher quizFetcher = new QuizFetcher();
     private QuestionList questions;
@@ -46,6 +53,7 @@ public class Controller implements Initializable {
 
     private boolean quizStarted;
     private boolean answered;
+    private boolean paused;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -70,8 +78,10 @@ public class Controller implements Initializable {
         buttons.add(buttonB);
         buttons.add(buttonC);
         buttons.add(buttonD);
+
         quizStarted = false;
         answered = true;
+        paused = false;
     }
 
     @FXML
@@ -110,6 +120,7 @@ public class Controller implements Initializable {
                 numRight.setText("0");
                 numWrong.setText("0");
                 score.setText("0%");
+                startTimer();
                 updateQuestionUI(questions.currentQuestion());
             } else {
                 new Alert(Alert.AlertType.WARNING, "No questions found for these settings.").showAndWait();
@@ -123,6 +134,27 @@ public class Controller implements Initializable {
     }
 
     /**
+     * Starts quiz timer
+     */
+    private void startTimer() {
+        secondsElapsed = 0;
+        timer.setText("00:00");
+        if (quizTimeline != null) {
+            quizTimeline.stop();
+        }
+
+        quizTimeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            secondsElapsed++;
+            int minutes = secondsElapsed / 60;
+            int seconds = secondsElapsed % 60;
+            timer.setText(String.format("%02d:%02d", minutes, seconds));
+        }));
+
+        quizTimeline.setCycleCount(Animation.INDEFINITE);
+        quizTimeline.play();
+    }
+
+    /**
      * Helper to refresh the UI with the current question.
      */
     private void updateQuestionUI(Question current) {
@@ -131,15 +163,30 @@ public class Controller implements Initializable {
         } else {
             quizStarted = false;
             answered = true;
-            questionTextArea.setText("");
-            buttonA.setText("Button A");
-            buttonB.setText("Button B");
-            buttonC.setText("Button C");
-            buttonD.setText("Button D");
+            paused = false;
+
+            resetQuestionUI();
+
+            pauseButton.setText("Pause");
+
             timeLabel.setText("Final Time:");
+            if (quizTimeline != null) {
+                quizTimeline.stop();
+            }
             timer.setStyle("-fx-background-color: #A9DFBF;");
             score.setStyle("-fx-background-color: #A9DFBF;");
         }
+    }
+
+    /**
+     * Resets question UI for finishing and pausing quiz
+     */
+    private void resetQuestionUI() {
+        questionTextArea.setText("");
+        buttonA.setText("Button A");
+        buttonB.setText("Button B");
+        buttonC.setText("Button C");
+        buttonD.setText("Button D");
     }
 
     @FXML private void buttonAPressed() { buttonPressed(buttonA); }
@@ -169,7 +216,7 @@ public class Controller implements Initializable {
 
     @FXML
     private void nextQuestion() {
-        if (quizStarted) {
+        if (quizStarted && !paused) {
             if (!answered) {
                 colorCorrectButton();
                 nextButton.setText("Next");
@@ -198,17 +245,31 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    private void pauseQuiz(ActionEvent event) {
-        // TODO: Implement method
+    private void pauseQuiz() {
+        if (quizStarted) {
+            if (!paused) {
+                quizTimeline.pause();
+                resetQuestionUI();
+                pauseButton.setText("Unpause");
+                paused = true;
+            } else {
+                quizTimeline.play();
+                updateQuestionUI(questions.currentQuestion());
+                pauseButton.setText("Pause");
+                paused = false;
+            }
+        }
     }
 
     @FXML
-    private void quitQuiz(ActionEvent event) {
-        // TODO: Implement method
+    private void quitQuiz() {
+        if (quizStarted) {
+            updateQuestionUI(null);
+        }
     }
 
     @FXML
-    private void saveQuiz(ActionEvent event) {
+    private void saveQuiz() {
         // TODO: Implement method
     }
 }
