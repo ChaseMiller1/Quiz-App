@@ -58,7 +58,6 @@ public class Controller implements Initializable {
     private QuestionList questions;
     private HashMap<String, Integer> subjects;
     private HashMap<String, String> types;
-    private List<String> difficulties;
 
     private boolean quizStarted;
     private boolean answered;
@@ -69,11 +68,10 @@ public class Controller implements Initializable {
         try {
             subjects = quizFetcher.getAllCategories();
             types = quizFetcher.getTypeOptions();
-            difficulties = quizFetcher.getDifficultyOptions();
 
             subjectBox.setItems(FXCollections.observableArrayList(subjects.keySet()).sorted());
             typeBox.setItems(FXCollections.observableArrayList(types.keySet()).sorted());
-            difficultyBox.setItems(FXCollections.observableArrayList(difficulties));
+            difficultyBox.setItems(FXCollections.observableArrayList(quizFetcher.getDifficultyOptions()));
 
             subjectBox.getSelectionModel().selectFirst();
             typeBox.getSelectionModel().selectFirst();
@@ -306,7 +304,7 @@ public class Controller implements Initializable {
             quizTimeline.stop();
         }
 
-        quizTimeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+        quizTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             secondsElapsed++;
             int minutes = secondsElapsed / 60;
             int seconds = secondsElapsed % 60;
