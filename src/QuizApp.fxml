@@ -190,42 +190,42 @@
                               <Font size="16.0" />
                            </font>
                         </TextArea>
-                        <ProgressBar fx:id="quizProgress" prefHeight="18.0" prefWidth="302.0" progress="0.0">
+                        <ProgressBar fx:id="quizProgress" prefHeight="21.0" prefWidth="280.0" progress="0.0">
                            <VBox.margin>
                               <Insets left="10.0" right="10.0" />
                            </VBox.margin>
                         </ProgressBar>
-                        <HBox prefHeight="70.0" prefWidth="300.0">
+                        <HBox prefHeight="100.0" prefWidth="300.0">
                            <children>
-                              <Button fx:id="buttonA" mnemonicParsing="false" onAction="#buttonAPressed" prefHeight="50.0" prefWidth="130.0" text="Answer A" wrapText="true">
+                              <Button fx:id="buttonA" mnemonicParsing="false" onAction="#buttonAPressed" prefHeight="70.0" prefWidth="130.0" text="Answer A" wrapText="true">
                                  <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="buttonB" mnemonicParsing="false" onAction="#buttonBPressed" prefHeight="50.0" prefWidth="130.0" text="Answer B" wrapText="true">
+                              <Button fx:id="buttonB" mnemonicParsing="false" onAction="#buttonBPressed" prefHeight="70.0" prefWidth="130.0" text="Answer B" wrapText="true">
                                  <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </HBox.margin>
                               </Button>
                            </children>
                         </HBox>
-                        <HBox fx:id="CDHBox" prefHeight="70.0" prefWidth="300.0">
+                        <HBox fx:id="CDHBox" prefHeight="100.0" prefWidth="300.0">
                            <children>
-                              <Button fx:id="buttonC" mnemonicParsing="false" onAction="#buttonCPressed" prefHeight="50.0" prefWidth="130.0" text="Answer C" wrapText="true">
+                              <Button fx:id="buttonC" mnemonicParsing="false" onAction="#buttonCPressed" prefHeight="70.0" prefWidth="130.0" text="Answer C" wrapText="true">
                                  <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="buttonD" mnemonicParsing="false" onAction="#buttonDPressed" prefHeight="50.0" prefWidth="130.0" text="Answer D" wrapText="true">
+                              <Button fx:id="buttonD" mnemonicParsing="false" onAction="#buttonDPressed" prefHeight="70.0" prefWidth="130.0" text="Answer D" wrapText="true">
                                  <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </HBox.margin>
                               </Button>
                            </children>
                         </HBox>
-                        <HBox prefHeight="70.0" prefWidth="300.0">
+                        <HBox prefHeight="42.0" prefWidth="300.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#quitQuiz" prefHeight="70.0" prefWidth="130.0" text="Quit">
+                              <Button mnemonicParsing="false" onAction="#quitQuiz" prefHeight="20.0" prefWidth="130.0" text="Quit">
                                  <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </HBox.margin>
@@ -233,7 +233,7 @@
                                     <Font size="18.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextQuestion" prefHeight="70.0" prefWidth="130.0" text="Skip">
+                              <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextQuestion" prefHeight="20.0" prefWidth="130.0" text="Skip">
                                  <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </HBox.margin>
