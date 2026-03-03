@@ -21,6 +21,10 @@ import java.util.ResourceBundle;
  */
 public class Controller implements Initializable {
 
+    private final String STYLE_CORRECT = "CORRECT";
+    private final String STYLE_WRONG = "WRONG";
+    private final String STYLE_RESET = "RESET";
+
     @FXML private Slider questionBar;
     @FXML private TextField numQuestions;
     @FXML private ComboBox<String> subjectBox;
@@ -29,11 +33,13 @@ public class Controller implements Initializable {
 
     @FXML private TextArea questionTextArea;
     @FXML private ProgressBar quizProgress;
+
     @FXML private Button buttonA;
     @FXML private Button buttonB;
     @FXML private Button buttonC;
     @FXML private Button buttonD;
-    @FXML private List<Button> buttons;
+    private List<Button> buttons;
+
     @FXML private Button nextButton;
     @FXML private Button fileButton;
     @FXML private HBox CDHBox;
@@ -88,6 +94,136 @@ public class Controller implements Initializable {
     }
 
     @FXML
+    private void startQuiz() throws Exception {
+        if (!quizStarted) {
+            String type = types.get(typeBox.getValue());
+            List<Question> fetched = quizFetcher.fetchQuestions(
+                    (int) questionBar.getValue(),
+                    subjects.get(subjectBox.getValue()),
+                    difficultyBox.getValue(),
+                    type
+            );
+
+            if (fetched != null && !fetched.isEmpty()) {
+                questions = new QuestionList(fetched);
+                initializeQuizUI();
+            } else {
+                new Alert(Alert.AlertType.WARNING, "No questions found for these settings.").showAndWait();
+            }
+        }
+    }
+
+    @FXML
+    private void quizLoading() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(
+                "Text files (*.txt)", "*.txt"));
+
+        if (quizStarted) {
+            if (!paused) {
+                pauseQuiz();
+            }
+
+            fileChooser.setTitle("Save Quiz");
+            fileChooser.setInitialFileName("my_quiz.txt");
+            File file = fileChooser.showSaveDialog(nextButton.getScene().getWindow());
+
+            if (file != null && questions != null) {
+                questions.serializeQuestions(file);
+            }
+        } else {
+            fileChooser.setTitle("Load Quiz");
+            File file = fileChooser.showOpenDialog(nextButton.getScene().getWindow());
+
+            if (file != null) {
+                List<Question> loaded = FileUtilities.loadQuestions(file);
+                if (loaded != null) {
+                    questions = new QuestionList(loaded);
+                    initializeQuizUI();
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Could not load the quiz file.").show();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void nextQuestion() {
+        if (quizStarted && !paused) {
+            if (!answered) {
+                numWrong.setText(String.valueOf(Integer.parseInt(numWrong.getText()) + 1));
+                updateScoreDisplay();
+                colorCorrectButton();
+                nextButton.setText("Next");
+                answered = true;
+            } else {
+                resetColors();
+                updateQuestionUI(questions.nextQuestion());
+                nextButton.setText("Skip");
+                answered = false;
+
+                int right = Integer.parseInt(numRight.getText());
+                int wrong = Integer.parseInt(numWrong.getText());
+                quizProgress.setProgress((double) (right + wrong) / questions.size());
+            }
+        }
+    }
+
+    /**
+     * Checks to see if the pressed button is the correct answer
+     * @param button that was pressed
+     */
+    private void buttonPressed(Button button) {
+        if (!answered) {
+            answered = true;
+            nextButton.setText("Next");
+            int right = Integer.parseInt(numRight.getText());
+            int wrong = Integer.parseInt(numWrong.getText());
+
+            if (button.getText().equals(questions.currentQuestion().getCorrectAnswer())) {
+                setUIStyle(button, STYLE_CORRECT);
+                right++;
+                numRight.setText(String.valueOf(right));
+            } else {
+                setUIStyle(button, STYLE_WRONG);
+                colorCorrectButton();
+                wrong++;
+                numWrong.setText(String.valueOf(wrong));
+            }
+            updateScoreDisplay();
+        }
+    }
+
+    @FXML private void buttonAPressed() { buttonPressed(buttonA); }
+    @FXML private void buttonBPressed() { buttonPressed(buttonB); }
+    @FXML private void buttonCPressed() { buttonPressed(buttonC); }
+    @FXML private void buttonDPressed() { buttonPressed(buttonD); }
+
+    @FXML
+    private void pauseQuiz() {
+        if (quizStarted) {
+            if (!paused) {
+                quizTimeline.pause();
+                resetQuestionUI();
+                pauseButton.setText("Unpause");
+                paused = true;
+            } else {
+                quizTimeline.play();
+                updateQuestionUI(questions.currentQuestion());
+                pauseButton.setText("Pause");
+                paused = false;
+            }
+        }
+    }
+
+    @FXML
+    private void quitQuiz() {
+        if (quizStarted) {
+            updateQuestionUI(null);
+        }
+    }
+
+    @FXML
     private void getNumQuestions() {
         numQuestions.setText(String.valueOf((int) questionBar.getValue()));
     }
@@ -101,84 +237,62 @@ public class Controller implements Initializable {
         difficultyBox.getSelectionModel().selectFirst();
     }
 
-    @FXML
-    private void startQuiz() throws Exception {
-        if (!quizStarted) {
-            score.setStyle("");
-            timer.setStyle("");
-            timeLabel.setText("Time:");
-            quizProgress.setProgress(0);
+    private void initializeQuizUI() {
+        setUIStyle(score, STYLE_RESET);
+        setUIStyle(timer, STYLE_RESET);
+        resetColors();
 
-                    String type = types.get(typeBox.getValue());
-            List<Question> fetched = quizFetcher.fetchQuestions(
-                    (int) questionBar.getValue(),
-                    subjects.get(subjectBox.getValue()),
-                    difficultyBox.getValue(),
-                    type
-            );
+        timeLabel.setText("Time:");
+        quizProgress.setProgress(0.0);
+        numRight.setText("0");
+        numWrong.setText("0");
+        score.setText("0%");
 
-            if (fetched != null && !fetched.isEmpty()) {
-                questions = new QuestionList(fetched);
-                quizStarted = true;
-                answered = false;
-                numRight.setText("0");
-                numWrong.setText("0");
-                score.setText("0%");
-                fileButton.setText("Save Quiz");
-                startTimer();
-                updateQuestionUI(questions.currentQuestion());
-            } else {
-                new Alert(Alert.AlertType.WARNING, "No questions found for these settings.").showAndWait();
-            }
+        quizStarted = true;
+        answered = false;
+        fileButton.setText("Save Quiz");
+
+        startTimer();
+        updateQuestionUI(questions.currentQuestion());
+    }
+
+    /**
+     * Scoring system for calculating and displaying current score
+     */
+    private void updateScoreDisplay() {
+        int right = Integer.parseInt(numRight.getText());
+        int wrong = Integer.parseInt(numWrong.getText());
+        int total = right + wrong;
+
+        if (total == 0) {
+            score.setText("0%");
+        } else {
+            score.setText((100 * right / total) + "%");
         }
     }
 
-    @FXML
-    private void quizLoading() {
-
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-                "Text files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        if (quizStarted) {
-            if (!paused) {
-                pauseQuiz();
-            }
-            fileChooser.setTitle("Save Quiz");
-            fileChooser.setInitialFileName("my_quiz.txt");
-
-            File file = fileChooser.showSaveDialog(nextButton.getScene().getWindow());
-            if (file != null && questions != null) {
-                questions.serializeQuestions(file);
-            }
+    /**
+     * Helper to refresh the UI with the current question.
+     */
+    private void updateQuestionUI(Question current) {
+        if (current != null) {
+            current.updateUI(questionTextArea, CDHBox, buttons);
         } else {
-            fileChooser.setTitle("Load Quiz");
+            quizStarted = false;
+            answered = true;
+            paused = false;
 
-            File file = fileChooser.showOpenDialog(nextButton.getScene().getWindow());
+            resetQuestionUI();
+            pauseButton.setText("Pause");
+            fileButton.setText("Load Quiz");
+            timeLabel.setText("Final Time:");
 
-            if (file != null) {
-                List<Question> loaded = FileUtilities.loadQuestions(file);
-                if (loaded != null) {
-                    questions = new QuestionList(loaded);
-                    quizStarted = true;
-                    answered = false;
-
-                    score.setStyle("");
-                    timer.setStyle("");
-                    timeLabel.setText("Time:");
-                    quizProgress.setProgress(0);
-
-                    numRight.setText("0");
-                    numWrong.setText("0");
-                    score.setText("0%");
-                    fileButton.setText("Save Quiz");
-                    startTimer();
-                    updateQuestionUI(questions.currentQuestion());
-                } else {
-                    new Alert(Alert.AlertType.ERROR, "Could not load the quiz file.").show();
-                }
+            if (quizTimeline != null) {
+                quizTimeline.stop();
             }
+
+            setUIStyle(timer, STYLE_CORRECT);
+            setUIStyle(score, STYLE_CORRECT);
         }
     }
 
@@ -204,27 +318,22 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Helper to refresh the UI with the current question.
+     * Colors correct answer
      */
-    private void updateQuestionUI(Question current) {
-        if (current != null) {
-            current.updateUI(questionTextArea, CDHBox, buttons);
-        } else {
-            quizStarted = false;
-            answered = true;
-            paused = false;
-
-            resetQuestionUI();
-
-            pauseButton.setText("Pause");
-            fileButton.setText("Load Quiz");
-
-            timeLabel.setText("Final Time:");
-            if (quizTimeline != null) {
-                quizTimeline.stop();
+    private void colorCorrectButton() {
+        for (Button button : buttons) {
+            if (button.getText().equals(questions.currentQuestion().getCorrectAnswer())) {
+                setUIStyle(button, "CORRECT");
             }
-            timer.setStyle("-fx-background-color: #A9DFBF;");
-            score.setStyle("-fx-background-color: #A9DFBF;");
+        }
+    }
+
+    /**
+     * Resets button colors
+     */
+    private void resetColors() {
+        for (Button button : buttons) {
+            setUIStyle(button, "RESET");
         }
     }
 
@@ -239,86 +348,16 @@ public class Controller implements Initializable {
         buttonD.setText("Button D");
     }
 
-    @FXML private void buttonAPressed() { buttonPressed(buttonA); }
-    @FXML private void buttonBPressed() { buttonPressed(buttonB); }
-    @FXML private void buttonCPressed() { buttonPressed(buttonC); }
-    @FXML private void buttonDPressed() { buttonPressed(buttonD); }
-
-    private void buttonPressed(Button button) {
-        if (!answered) {
-            answered = true;
-            nextButton.setText("Next");
-            int right = Integer.parseInt(numRight.getText());
-            int wrong = Integer.parseInt(numWrong.getText());
-            if (button.getText().equals(questions.currentQuestion().getCorrectAnswer())) {
-                button.setStyle("-fx-background-color: #A9DFBF;");
-                right++;
-                numRight.setText(String.valueOf(right));
-            } else {
-                button.setStyle("-fx-background-color: #F1948A;");
-                colorCorrectButton();
-                wrong++;
-                numWrong.setText(String.valueOf(wrong));
-            }
-            score.setText(100 * right / (right + wrong) + "%");
-        }
-    }
-
-    @FXML
-    private void nextQuestion() {
-        if (quizStarted && !paused) {
-            if (!answered) {
-                numWrong.setText(String.valueOf(Integer.parseInt(numWrong.getText()) + 1));
-                colorCorrectButton();
-                nextButton.setText("Next");
-                answered = true;
-            } else {
-                resetColors();
-                updateQuestionUI(questions.nextQuestion());
-                nextButton.setText("Skip");
-                answered = false;
-                quizProgress.setProgress((double)
-                        (Integer.parseInt(numRight.getText()) + Integer.parseInt(numWrong.getText()))
-                        / questions.size());
-            }
-        }
-    }
-
-    private void colorCorrectButton() {
-        for (Button button : buttons) {
-            if (button.getText().equals(questions.currentQuestion().getCorrectAnswer())) {
-                button.setStyle("-fx-background-color: #A9DFBF;");
-            }
-        }
-    }
-
-    private void resetColors() {
-        for (Button button : buttons) {
-            button.setStyle("");
-        }
-    }
-
-    @FXML
-    private void pauseQuiz() {
-        if (quizStarted) {
-            if (!paused) {
-                quizTimeline.pause();
-                resetQuestionUI();
-                pauseButton.setText("Unpause");
-                paused = true;
-            } else {
-                quizTimeline.play();
-                updateQuestionUI(questions.currentQuestion());
-                pauseButton.setText("Pause");
-                paused = false;
-            }
-        }
-    }
-
-    @FXML
-    private void quitQuiz() {
-        if (quizStarted) {
-            updateQuestionUI(null);
+    /**
+     * Sets color of element based on its state
+     * @param element to color
+     * @param state of element
+     */
+    private void setUIStyle(Control element, String state) {
+        switch(state) {
+            case STYLE_CORRECT: element.setStyle("-fx-background-color: #A9DFBF;"); break;
+            case STYLE_WRONG:   element.setStyle("-fx-background-color: #F1948A;"); break;
+            case STYLE_RESET:   element.setStyle(""); break;
         }
     }
 }
