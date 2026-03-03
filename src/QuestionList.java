@@ -1,6 +1,9 @@
 import java.io.File;
 import java.util.List;
 
+/**
+ * Class for the series of questions
+ */
 public class QuestionList {
     List<Question> questions;
     int currentIndex;

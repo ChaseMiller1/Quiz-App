@@ -3,6 +3,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import java.util.List;
 
+
+/**
+ * Multiple choice question
+ */
 public class MultipleChoice extends Question {
 
     @Override

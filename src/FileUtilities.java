@@ -3,6 +3,9 @@ import javafx.scene.control.Alert;
 import java.io.*;
 import java.util.List;
 
+/**
+ * Utility class for saving and loading files
+ */
 public class FileUtilities {
 
     /**
