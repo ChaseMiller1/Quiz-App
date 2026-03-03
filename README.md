@@ -1,1 +1,1 @@
-Kata option 1: Quiz App
+Kata Option 1: Quiz App
