@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.List;
 
 public class QuestionList {
@@ -25,18 +26,27 @@ public class QuestionList {
         return null;
     }
 
+    /**
+     * Get current question
+     * @return current question
+     */
     public Question currentQuestion() {
         return questions.get(currentIndex);
     }
 
+    /**
+     * Get size
+     * @return size
+     */
     public int size() {
         return questions.size();
     }
 
     /**
      * Serializes the questions in the list
+     * @param file to serialize to
      */
-    public void serializeQuestions() {
-
+    public void serializeQuestions(File file) {
+        FileUtilities.saveQuestions(file, questions);
     }
 }

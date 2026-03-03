@@ -1,4 +1,3 @@
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,10 +29,24 @@ public class QuizFetcher {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode resultsNode = getNodes(mapper, response, "results");
 
-        if (!resultsNode.isEmpty()) {
-            return mapper.readValue(resultsNode.toString(), new TypeReference<>(){});
+        List<Question> questionsList = new ArrayList<>();
+        if (resultsNode != null && resultsNode.isArray()) {
+            for (JsonNode node : resultsNode) {
+                Question question = mapper.treeToValue(node, Question.class);
+
+                question.setQuestion(unescapeHtml(question.getQuestion()));
+                question.setCorrectAnswer(unescapeHtml(question.getCorrectAnswer()));
+
+                List<String> cleanedIncorrect = new ArrayList<>();
+                for (String answer : question.getIncorrectAnswers()) {
+                    cleanedIncorrect.add(unescapeHtml(answer));
+                }
+                question.setIncorrectAnswers(cleanedIncorrect);
+
+                questionsList.add(question);
+            }
         }
-        return new ArrayList<>();
+        return questionsList;
     }
 
     /**
@@ -95,5 +108,19 @@ public class QuizFetcher {
     private JsonNode getNodes(ObjectMapper mapper, HttpResponse<String> response, String type) throws Exception {
         JsonNode rootNode = mapper.readTree(response.body());
         return rootNode.path(type);
+    }
+
+    /**
+     * Converts HTML entities to their respective characters
+     * @param input to change
+     * @return fixed input
+     */
+    private String unescapeHtml(String input) {
+        return input.replace("&quot;", "\"")
+                .replace("&#039;", "'")
+                .replace("&amp;", "&")
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&deg;", "°");
     }
 }

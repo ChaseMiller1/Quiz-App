@@ -6,8 +6,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +35,7 @@ public class Controller implements Initializable {
     @FXML private Button buttonD;
     @FXML private List<Button> buttons;
     @FXML private Button nextButton;
+    @FXML private Button fileButton;
     @FXML private HBox CDHBox;
 
     @FXML private TextField numRight;
@@ -121,6 +124,7 @@ public class Controller implements Initializable {
                 numRight.setText("0");
                 numWrong.setText("0");
                 score.setText("0%");
+                fileButton.setText("Save Quiz");
                 startTimer();
                 updateQuestionUI(questions.currentQuestion());
             } else {
@@ -131,7 +135,51 @@ public class Controller implements Initializable {
 
     @FXML
     private void quizLoading() {
-        // TODO: Implement method
+
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+                "Text files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        if (quizStarted) {
+            if (!paused) {
+                pauseQuiz();
+            }
+            fileChooser.setTitle("Save Quiz");
+            fileChooser.setInitialFileName("my_quiz.txt");
+
+            File file = fileChooser.showSaveDialog(nextButton.getScene().getWindow());
+            if (file != null && questions != null) {
+                questions.serializeQuestions(file);
+            }
+        } else {
+            fileChooser.setTitle("Load Quiz");
+
+            File file = fileChooser.showOpenDialog(nextButton.getScene().getWindow());
+
+            if (file != null) {
+                List<Question> loaded = FileUtilities.loadQuestions(file);
+                if (loaded != null) {
+                    questions = new QuestionList(loaded);
+                    quizStarted = true;
+                    answered = false;
+
+                    score.setStyle("");
+                    timer.setStyle("");
+                    timeLabel.setText("Time:");
+                    quizProgress.setProgress(0);
+
+                    numRight.setText("0");
+                    numWrong.setText("0");
+                    score.setText("0%");
+                    fileButton.setText("Save Quiz");
+                    startTimer();
+                    updateQuestionUI(questions.currentQuestion());
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Could not load the quiz file.").show();
+                }
+            }
+        }
     }
 
     /**
@@ -169,6 +217,7 @@ public class Controller implements Initializable {
             resetQuestionUI();
 
             pauseButton.setText("Pause");
+            fileButton.setText("Load Quiz");
 
             timeLabel.setText("Final Time:");
             if (quizTimeline != null) {
@@ -219,6 +268,7 @@ public class Controller implements Initializable {
     private void nextQuestion() {
         if (quizStarted && !paused) {
             if (!answered) {
+                numWrong.setText(String.valueOf(Integer.parseInt(numWrong.getText()) + 1));
                 colorCorrectButton();
                 nextButton.setText("Next");
                 answered = true;
